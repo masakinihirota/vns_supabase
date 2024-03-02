@@ -1,28 +1,26 @@
 'use client';
 
-import Button from '@/components/ui/Button';
+import Button from '@/src/components/ui/Button';
+import React from 'react';
 import Link from 'next/link';
-import { signInWithPassword } from '@/utils/auth-helpers/server';
+import { signUp } from '@/utils/auth-helpers/server';
 import { handleRequest } from '@/utils/auth-helpers/client';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // Define prop type with allowEmail boolean
-interface PasswordSignInProps {
+interface SignUpProps {
   allowEmail: boolean;
   redirectMethod: string;
 }
 
-export default function PasswordSignIn({
-  allowEmail,
-  redirectMethod
-}: PasswordSignInProps) {
+export default function SignUp({ allowEmail, redirectMethod }: SignUpProps) {
   const router = redirectMethod === 'client' ? useRouter() : null;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsSubmitting(true); // Disable the button while the request is being handled
-    await handleRequest(e, signInWithPassword, router);
+    await handleRequest(e, signUp, router);
     setIsSubmitting(false);
   };
 
@@ -62,13 +60,14 @@ export default function PasswordSignIn({
             className="mt-1"
             loading={isSubmitting}
           >
-            Sign in
+            Sign up
           </Button>
         </div>
       </form>
+      <p>Already have an account?</p>
       <p>
-        <Link href="/signin/forgot_password" className="font-light text-sm">
-          Forgot your password?
+        <Link href="/signin/password_signin" className="font-light text-sm">
+          Sign in with email and password
         </Link>
       </p>
       {allowEmail && (
@@ -78,11 +77,6 @@ export default function PasswordSignIn({
           </Link>
         </p>
       )}
-      <p>
-        <Link href="/signin/signup" className="font-light text-sm">
-          Don't have an account? Sign up
-        </Link>
-      </p>
     </div>
   );
 }
